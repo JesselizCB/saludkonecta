@@ -1,61 +1,76 @@
 <template>
-  <v-container>
-    <v-row class="justify-space-between">
-      <v-col cols="3">
-        <v-text-field v-model="search" append-icon="search" label="Buscar" single-line hide-details></v-text-field>
-      </v-col>
-      <v-col cols="3" class="mt-3">
-        <v-select
-          :items="filterEstado"
-          v-model="filterEstadoValue"
-          label="Seleccionar Estado"
-          dense
-          @change="onfilterEstado(filterEstadoValue)"
-        ></v-select>
-      </v-col>
-      <v-col cols="3" class="pb-0 mt-3">
-        <v-btn color="teal accent-4 white--text" @click.stop="registerForm=true">
-          Crear Registro
-          <v-icon right class="white--text">plus-circle</v-icon>
-        </v-btn>
-        <register :visible="registerForm" @close="registerForm=false"></register>
-      </v-col>
-    </v-row>
-    <v-row class="justify-center mt-2">
-      <v-col cols="11">
-        <v-data-table
-          :headers="headers"
-          :items="desserts"
-          :search="search"
-          :sort-by="['calories', 'fat']"
-          :sort-desc="[false, true]"
-          multi-sort
-          class="elevation-1"
-        >
-          <template v-slot:item.detail="{ item }">
-            <v-btn x-small color="teal accent-4 white--text" @click="openPaciente(item)">Detalles</v-btn>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <navBar icon="assignment" title="Busqueda de casos" :enable="value"></navBar>
+    <v-container>
+      <v-row class="justify-space-between">
+        <v-col cols="3 ml-3">
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Buscar"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="3" class="mt-4">
+          <v-select
+            :items="filterEstado"
+            v-model="filterEstadoValue"
+            label="Seleccionar Estado"
+            dense
+            @change="onfilterEstado(filterEstadoValue)"
+          ></v-select>
+        </v-col>
+        <v-col cols="3" class="justify-end mt-4 ml-5">
+          <v-btn color="teal accent-4 white--text" @click.stop="registerForm=true">
+            Crear Registro
+            <v-icon right class="white--text">add_circle_outline</v-icon>
+          </v-btn>
+          <register :visible="registerForm" @close="registerForm=false"></register>
+        </v-col>
+      </v-row>
+      <v-row class="justify-center mt-2">
+        <v-col cols="12">
+          <v-data-table
+            :headers="headers"
+            :items="dataTable"
+            :search="search"
+            :sort-by="['calories', 'fat']"
+            :sort-desc="[false, true]"
+            multi-sort
+            class="elevation-1"
+          >
+            <template v-slot:item.detail="{ item }">
+              <v-btn x-small color="teal accent-4 white--text" @click="openPaciente(item)">Detalles</v-btn>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import register from "../components/register";
+import navBar from "../components/navBar";
+import { getRegister } from "../firebase/colaborador";
+import moment from "moment";
 
 export default {
   name: "Home",
   components: {
-    register
+    register,
+    navBar
   },
   created() {
     this.$store.commit("SET_LAYOUT", "principal-layout");
+    this.loadRegister();
   },
   data() {
     return {
       registerForm: false,
+      value: false,
       search: "",
       filterEstado: [
         "Todos",
@@ -74,32 +89,46 @@ export default {
           sortable: false,
           value: "number"
         },
-        { text: "Dni", value: "dni" },
-        { text: "Nombres y apellidos", value: "nombre" },
+        { text: "Documento", value: "documento" },
+        { text: "No. Documento", value: "dni" },
+        { text: "Nombres y Apellidos", value: "nombre" },
         { text: "Celular", value: "phone", sortable: false },
         { text: "Cuenta", value: "account" },
+        { text: "Sede", value: "sede" },
         { text: "Estado", value: "status" },
         { text: "Fecha y hora", value: "date" },
-        { text: "Observación", value: "information", sortable: false },
+        { text: "Dias", value: "days", sortable: false },
         { text: "Detalle", value: "detail", sortable: false }
       ],
-      desserts: [
-        {
-          dni: "Frozen Yogurt",
-          nombre: 200,
-          phone: 6.0,
-          account: 24,
-          status: 4.0,
-          date: "1%",
-          information:"Llllllllllll"
-        },
-      ]
+      dataTable: []
     };
   },
   methods: {
-    openPaciente(item){
-      localStorage.setItem("navBar", "Maray Montes de Oca");
-      this.$router.replace({ path: "/details" });
+    openPaciente(item) {
+      console.log(item);
+      this.$router.push({ name: "Expediente", params:{ colaborador: item } });
+    },
+    loadRegister() {
+      let i = 1;
+      getRegister().onSnapshot(querySnapshot => {
+        this.dataTable = [];
+        querySnapshot.forEach(item => {
+          this.dataTable.push({
+            number: i,
+            documento: (item.data().typedoc == "Carnet Extranjeria")? "CE":item.data().typedoc,
+            dni: item.data().document,
+            nombre: item.data().name,
+            phone: item.data().phone,
+            account: item.data().account,
+            sede: item.data().sede,
+            status: item.data().status,
+            days: "5",
+            date: item.data().date,
+            idColaborador:item.id,
+          })
+          i++;
+        });
+      });
     }
   }
 };

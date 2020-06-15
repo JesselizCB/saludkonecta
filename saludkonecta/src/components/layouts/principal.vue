@@ -3,7 +3,7 @@
     <!-- expand-on-hover -->
     <!-- :mini-variant.sync="mini" -->
     <v-navigation-drawer
-      width="200"
+      width="180"
       color="#FFFFFF"
       v-model="drawer"
       app
@@ -50,57 +50,61 @@
     </v-navigation-drawer>
 
     <v-content style="background-color:#F5F6F9;">
-      <v-app-bar color="teal accent-4" dense dark>
-        <v-app-bar-nav-icon><v-icon>menu</v-icon></v-app-bar-nav-icon>
+      <!-- <v-app-bar color="teal accent-4" dense dark>
+        <v-app-bar-nav-icon>
+          <v-icon>menu</v-icon>
+        </v-app-bar-nav-icon>
         <v-toolbar-title>{{title}}</v-toolbar-title>
-      </v-app-bar>
-      <v-container fluid>
-        <v-row align="center" justify="center">
-          <v-col>
+        <v-spacer></v-spacer>
+        <v-btn icon v-show='currentUrl=="/details"'>
+          <v-icon>keyboard_arrow_left</v-icon>Regresar
+        </v-btn>
+      </v-app-bar> -->
             <router-view></router-view>
-          </v-col>
-        </v-row>
-      </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
-// import firebase from "firebase";
+import { mapGetters } from "vuex";
+import * as firebase from "firebase/app";
 export default {
   props: {
     source: String
   },
   data: () => ({
     title: localStorage.getItem("navBar"),
+    currentUrl: window.location.pathname,
     drawer: true,
     mini: true,
     miniVariant: false
   }),
   computed: {
-    // map `this.user` to `this.$store.getters.user`
-    /*  ...mapGetters({
+    ...mapGetters({
       user: "user"
-    }) */
+    })
+  },
+  created: function() {
+    var currentUrl = window.location.pathname;
+    console.log(currentUrl);
   },
   methods: {
-    /* signOut() {
+    signOut() {
       firebase
         .auth()
         .signOut()
         .then(() => {
           this.$router.replace({
-            name: "login"
+            path: "/"
           });
         });
-    } */
+    }
   }
 };
 </script>
 
 <style>
-.size{
+.size {
   width: 5vw;
 }
 </style>

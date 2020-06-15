@@ -46,7 +46,9 @@
 </template>
 
 <script>
-// import firebase from "firebase";
+
+import * as firebase from 'firebase/app'
+import {getDoctor} from "../firebase/colaborador"
 
 export default {
   created() {
@@ -65,22 +67,23 @@ export default {
   },
   methods: {
     submit() {
-      // const email = `${this.form.email}@konecta.com`;
-      /*  firebase
+       const email = `${this.form.email}@konecta.com`;
+        firebase
         .auth()
         .signInWithEmailAndPassword(email, this.form.password)
-        .then(data => { */
-      localStorage.setItem("navBar", "Busqueda de casos");
-      this.$router.replace({ path: "/Home" });
-      /* })
+        .then(data => { 
+          getDoctor(data.user.uid).then((value) => {
+            localStorage.setItem("doctor",value.data().name);
+            this.$router.replace({ path: "/Home" });
+          })
+       })
         .catch(err => {
-          //  this.error = err.message;
           switch (err.code) {
             case "auth/user-not-found":
               this.error = "El usuario no se encuentra registrado";
               break;
             case "auth/wrong-password":
-              this.error = "La contraseña incorrecta";
+              this.error = "La contraseña es incorrecta";
               break;
             case "auth/invalid-email":
               this.error = "No se ingresó ningún correo electrónico";
@@ -88,7 +91,7 @@ export default {
             default:
               this.error = "Se ha producido un error";
           }
-        }); */
+        });
     }
   }
 };

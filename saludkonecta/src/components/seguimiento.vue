@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="show" max-width="400px" :persistent="true">
     <v-card>
-      <v-card-title class="justify-center">
+      <v-card-title class="cardTitle">
         <v-row>
           <v-col cols="11" class="text-center">
             <span class="title-1 font-weight-bold teal--text ml-3">Nuevo Seguimiento</span>
@@ -22,14 +22,14 @@
                 prepend-icon="supervisor_account"
                 color="teal"
                 :items="listContacto"
-                v-model="data.contact"
+                v-model="data.typeContact"
                 label="Contacto:"
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
             </v-row>
             <v-row>
               <v-text-field
-                prepend-icon="thermometer-lines"
+                prepend-icon="wb_incandescent"
                 label="Temperatura"
                 v-model="data.temperature"
                 color="teal"
@@ -38,12 +38,23 @@
               ></v-text-field>
             </v-row>
             <v-row>
-              <v-select
+              <v-text-field
                 prepend-icon="account_box"
                 color="teal"
-                :items="listName"
-                v-model="data.name"
+                readonly
+                v-model="doctorName"
                 label="Responsable Control de Temperatura:"
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-text-field>
+            </v-row>
+            <v-row>
+              <v-select
+                :items="statusList"
+                prepend-icon="perm_identity"
+                v-model="data.status"
+                label="Estado:"
+                color="teal"
+                required
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
             </v-row>
@@ -53,36 +64,52 @@
             </v-row>
             <v-row>
               <v-textarea
-              color="teal"
+                color="teal"
                 label
                 auto-grow
                 outlined
                 rows="1"
                 row-height="15"
-                placeholder="Describir los síntomas que presenta el colaborador"
+                placeholder="Describir síntomas que presenta el colaborador"
                 class="body-2"
+                v-model="data.observaciones_1"
               ></v-textarea>
             </v-row>
             <v-row class="black--text subtitle-1 font-weight-bold divRetiro">
               <v-icon>ballot</v-icon>
               <p class="mt-4 ml-1">Registrar Retiro anticipado</p>
             </v-row>
-            <v-row  class="divRetiro2"> <span>Si el colaborador presenta síntomas que ponen en riesgo su salud.</span></v-row>
-            <v-row><span class="body-2">Se registró retiro anticipado</span><v-checkbox value="retiro"></v-checkbox></v-row>
+            <v-row class="divRetiro2">
+              <span>Si el colaborador presenta síntomas que ponen en riesgo su salud.</span>
+            </v-row>
             <v-row>
-              <p>Observaciones adicionales:</p>
-              <v-textarea label auto-grow outlined rows="1" row-height="15" value="Describir"></v-textarea>
+              <span class="body-2">Se registró retiro anticipado</span>
+              <v-checkbox value="retiro"></v-checkbox>
+            </v-row>
+            <v-row class="fieldObs">
+              <p class="black--text subtitle-2 font-weight-bold">Observaciones adicionales:</p>
+              <v-textarea
+                color="teal"
+                label
+                auto-grow
+                outlined
+                rows="1"
+                row-height="15"
+                placeholder="Describir"
+                class="body-2"
+                v-model="data.observaciones_2"
+              ></v-textarea>
             </v-row>
           </v-container>
         </v-form>
       </v-card-text>
-      <v-card-actions class="btnSeguimiento">
+      <v-card-actions class="btnSeguimiento pb-5">
         <v-btn
           color="#00968F"
           class="text-capitalize white--text"
           width="220"
           type="submit"
-          @click="show = false, saveSeguimiento()"
+          @click="show = false,saveSeguimiento()"
         >Guardar</v-btn>
       </v-card-actions>
     </v-card>
@@ -90,28 +117,36 @@
 </template>
 
 <script>
+import {createSeguimiento} from "../firebase/colaborador";
+
 export default {
-  name: "register",
+  name: "seguimiento",
+  props: ["visible", "idColaborador"],
   data: () => ({
+    doctorName: localStorage.getItem("doctor"),
     valid: true,
     listContacto: ["Virtual", "Telefónica"],
     listName: ["Maray Montes", "Armando"],
     listDocuments: ["Carnet Extranjeria", "DNI", "PTP"],
-    valueSede: "",
-    listDocumentsValue: "",
-    data: [
+    statusList: [
+      "Acreditado",
+      "Fallecido",
+      "Hospitalizado",
+      "Negativo",
+      "Recuperado",
+      "Sospechoso"
+    ],
+    data: 
       {
-        name: "",
-        typeDocument: "",
-        document: "",
-        account: "",
-        sede: "",
+        idColaborador: "",
         typeContact: "",
-        status: ""
+        temperature: "",
+        status: "",
+        observaciones_1: "",
+        retiro: "",
+        observaciones_2: ""
       }
-    ]
   }),
-  props: ["visible"],
   computed: {
     show: {
       get() {
@@ -127,8 +162,10 @@ export default {
   methods: {
     saveSeguimiento() {
       this.$refs.form.validate();
+      this.data.idColaborador = this.idColaborador;
+      createSeguimiento(this.data),
       this.$refs.form.reset();
-      this.$router.replace({ path: "/details" });
+      this.doctorName = localStorage.getItem("doctor");
     }
   }
 };
@@ -140,7 +177,7 @@ export default {
 .typeDoc {
   width: 150px;
 }
-.btnGuardar {
+.btnSeguimiento {
   display: flex;
   justify-content: center;
   margin-top: -30px;
@@ -148,13 +185,21 @@ export default {
 .iconClose {
   margin-top: -10px;
 }
-.textField{
+.textField {
   margin-top: -50px;
 }
-.divRetiro{
+.divRetiro {
   margin-top: -20px;
 }
-.divRetiro2{
+.divRetiro2 {
   margin-top: -15px;
+}
+.cardTitle {
+  display: flex;
+  justify-content: center;
+  margin-top: -15px;
+}
+.fieldObs {
+  margin-top: -20px;
 }
 </style>

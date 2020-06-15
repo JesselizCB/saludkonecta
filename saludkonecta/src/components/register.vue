@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="show" max-width="550px" :persistent="true">
     <v-card>
-      <v-card-title class="justify-center">
+      <v-card-title class="cardTitle">
         <v-row>
           <v-col cols="11" class="text-center">
             <span class="title-1 font-weight-bold teal--text">Crear Registro</span>
@@ -44,46 +44,59 @@
                 required
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-text-field>
-              <v-row class="ml-1 mr-1">
-                <v-text-field
-                  prepend-icon="ballot"
-                  v-model="data.account"
-                  label="Cuenta:"
-                  class="sizeNoCuenta"
-                  color="teal"
-                  required
-                  :rules="[v => !!v || 'Campo requerido']"
-                ></v-text-field>
-                <v-select
-                  color="teal"
-                  class="ml-4"
-                  :items="listSede"
-                  v-model="data.sede"
-                  label="Sede:"
-                  required
-                ></v-select>
-              </v-row>
-              <v-row class="align-center">
-                <v-select
-                  prepend-icon="supervisor_account"
-                  :items="listContact"
-                  v-model="data.typeContact"
-                  label="Tipo de contacto:"
-                  class="ml-2 sizeTypeContact"
-                  color="teal"
-                  required
-                  :rules="[v => !!v || 'Campo requerido']"
-                ></v-select>
-                <v-text-field
-                  class="mr-3"
-                  prepend-icon="perm_identity"
-                  v-model="data.status"
-                  label="Estado:"
-                  color="teal"
-                  required
-                  :rules="[v => !!v || 'Campo requerido']"
-                ></v-text-field>
-              </v-row>
+            </v-row>
+            <v-row>
+              <v-text-field
+                prepend-icon="local_phone"
+                label="Telefono:"
+                v-model="data.phone"
+                class="fielPhone"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-text-field>
+            </v-row>
+            <v-row class="ml-1 mr-1">
+              <v-text-field
+                prepend-icon="ballot"
+                v-model="data.account"
+                label="Cuenta:"
+                class="fieldCuenta"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-text-field>
+              <v-select
+                prepend-icon="location_on"
+                class="fieldSede"
+                color="teal"
+                :items="listSede"
+                v-model="data.sede"
+                label="Sede:"
+                required
+              ></v-select>
+            </v-row>
+            <v-row class="align-center">
+              <v-select
+                prepend-icon="supervisor_account"
+                :items="listContact"
+                v-model="data.typeContact"
+                label="Tipo de contacto:"
+                class="fieldTypeContact"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-select>
+              <v-select
+                class="fieldStatus"
+                :items="statusList"
+                prepend-icon="perm_identity"
+                v-model="data.status"
+                label="Estado:"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-select>
             </v-row>
           </v-container>
         </v-form>
@@ -103,9 +116,11 @@
 </template>
 
 <script>
+import { createRegister } from "../firebase/colaborador";
+
 export default {
   name: "register",
-  create(){
+  create() {
     this.$refs.form.reset();
   },
   data: () => ({
@@ -120,16 +135,17 @@ export default {
     ],
     listDocuments: ["Carnet Extranjeria", "DNI", "PTP"],
     listContact: ["Presencial", "Telefonica"],
-    data: 
-      {
-        name: "",
-        typeDocument: "",
-        document: "",
-        account: "",
-        sede: "",
-        typeContact: "",
-        status: ""
-      }
+    statusList: ["Acreditado", "Fallecido", "Hospitalizado","Negativo", "Recuperado", "Sospechoso"],
+    data: {
+      name: "",
+      typeDocument: "",
+      document: "",
+      phone: "",
+      account: "",
+      sede: "",
+      typeContact: "",
+      status: ""
+    }
   }),
   props: ["visible"],
   computed: {
@@ -147,8 +163,9 @@ export default {
   methods: {
     saveRegister() {
       this.$refs.form.validate();
-      console.log(this.data);
-    }
+      createRegister(this.data);
+      this.$refs.form.reset();
+    },
   }
 };
 </script>
@@ -159,11 +176,7 @@ export default {
 .sizeTypeDoc {
   width: 150px;
 }
-.sizeNoCuenta {
-  margin-left: -5px;
-  width: 180px;
-}
-.sizeTypeContact {
+.fieldTypeContact {
   width: 180px;
 }
 .btnGuardar {
@@ -171,9 +184,26 @@ export default {
   justify-content: center;
 }
 .fieldCuenta {
-  margin-left: 50px;
+  margin-left: -15px;
+  width: 190px;
 }
 .iconClose {
   margin-top: -10px;
+}
+.fielPhone {
+  width: 100px;
+}
+.fieldSede{
+  width: 200px;
+  margin-left: 8px;
+}
+.cardTitle{
+  display: flex;
+  justify-content: center;
+  margin-top: -15px;
+}
+.fieldStatus{
+  width: 250px;
+  margin-right: 8px;
 }
 </style>
