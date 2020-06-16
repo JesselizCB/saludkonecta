@@ -7,6 +7,7 @@
           <v-card outlined class="px-5">
             <v-container>
               <v-row>
+                <p>{{arrayUser[0].status}}</p>
                 <v-col>
                   <p class="font-weight-bold">Documento: <span class="grey--text">{{colaborador.documento}}</span></p>
                   <p class="font-weight-bold">Cuenta: <span class="grey--text">{{colaborador.account}}</span></p>
@@ -26,7 +27,7 @@
             Añadir seguimiento
             <v-icon right class="white--text">add_circle_outline</v-icon>
           </v-btn>
-          <seguimiento :visible="seguimientoForm" :idColaborador="colaborador.idColaborador" @close="seguimientoForm=false"></seguimiento>
+          <seguimiento :visible="seguimientoForm" :idColaborador="colaborador.idColaborador" @close="seguimientoForm=false, loadDataUser()"></seguimiento>
           <v-text-field
             v-model="search"
             append-icon="search"
@@ -58,14 +59,20 @@
 // @ is an alias to /src
 import seguimiento from "../components/seguimiento";
 import navBar from "../components/navBar";
-import { getSeguimiento } from "../firebase/colaborador";
+import { getSeguimiento, getDataUser } from "../firebase/colaborador";
 
 export default {
   name: "Expediente",
   created() {
     this.$store.commit("SET_LAYOUT", "principal-layout");
     console.log(this.colaborador.idColaborador);
+    this.loadDataUser();
     this.loadTable();
+  },
+  mounted(){
+    this.loadDataUser();
+    console.log(this.arrayUser[0].status);
+    
   },
   components: {
     seguimiento,
@@ -82,7 +89,7 @@ export default {
       seguimientoForm: false,
       linkBack: true,
       search: "",
-
+      arrayUser:[],
       headers: [
         {
           text: "N°",
@@ -103,6 +110,16 @@ export default {
   methods: {
     toBack() {
       this.$router.replace({ path: "/Home" });
+    },
+    loadDataUser(){
+      let arrayData = [];
+      getDataUser(this.colaborador.idColaborador).onSnapshot(function(doc) {
+        console.log("Current data: ", doc.data());
+        arrayData.push(doc.data());
+    });
+      console.log(arrayData);
+      this.arrayUser = arrayData;
+      console.log(this.arrayUser);
     },
      loadTable(){
       let i = 1;

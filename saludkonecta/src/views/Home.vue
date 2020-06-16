@@ -106,7 +106,7 @@ export default {
   methods: {
     openPaciente(item) {
       console.log(item);
-      this.$router.push({ name: "Expediente", params:{ colaborador: item } });
+      this.$router.push({ name: "Expediente", params: { colaborador: item } });
     },
     loadRegister() {
       let i = 1;
@@ -115,17 +115,20 @@ export default {
         querySnapshot.forEach(item => {
           this.dataTable.push({
             number: i,
-            documento: (item.data().typedoc == "Carnet Extranjeria")? "CE":item.data().typedoc,
+            documento:
+              item.data().typedoc == "Carnet Extranjeria"
+                ? "CE"
+                : item.data().typedoc,
             dni: item.data().document,
             nombre: item.data().name,
             phone: item.data().phone,
             account: item.data().account,
             sede: item.data().sede,
             status: item.data().status,
-            days: "5",
+            days: "4",
             date: item.data().date,
-            idColaborador:item.id,
-          })
+            idColaborador: item.id
+          });
           i++;
         });
       });

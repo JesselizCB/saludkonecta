@@ -17,7 +17,8 @@ export const createRegister = (data) => db.collection('colaborador').add({
   status: data.status,
 });
 
-export const createSeguimiento = (data) => db.collection('seguimiento').add({
+export const createSeguimiento = (data) => {
+  db.collection('seguimiento').add({
   idColaborador: data.idColaborador,
   idDoctor: currentUser(),
   date: moment(new Date()).format("DD/MM/YYYY"),
@@ -28,9 +29,12 @@ export const createSeguimiento = (data) => db.collection('seguimiento').add({
   retiro: data.retiro,
   information_2: data.observaciones_2
 });
+db.collection('colaborador').doc(data.idColaborador).update({status: data.status});
+}
 export const getDoctor = (idDoctor) => db.collection('users').doc(idDoctor).get();
 
 export const getRegister = () => db.collection('colaborador').orderBy('date', 'desc');
 
 export const getSeguimiento = (idUser) => db.collection('seguimiento').where("idColaborador", "==", idUser);
 
+export const getDataUser = (idUser) => db.collection('colaborador').doc(idUser);
