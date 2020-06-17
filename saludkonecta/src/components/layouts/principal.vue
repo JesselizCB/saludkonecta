@@ -14,10 +14,10 @@
     >
       <v-list-item link @click.stop="miniVariant = !miniVariant">
         <v-list-item-content>
-          <v-list-item-title class="headline font-weight-bold teal--text text-center">Konecta</v-list-item-title>
+          <v-list-item-title class="headline font-weight-bold text-center colorKonecta">Konecta</v-list-item-title>
         </v-list-item-content>
-        <v-btn icon @click.stop="miniVariant = !miniVariant">
-          <v-icon class="teal--text">menu_open</v-icon>
+        <v-btn icon color="#182c50" @click.stop="miniVariant = !miniVariant">
+          <v-icon>menu_open</v-icon>
         </v-btn>
       </v-list-item>
       <v-divider></v-divider>
@@ -40,26 +40,16 @@
       <template v-slot:append>
         <v-list-item link @click.prevent="signOut">
           <v-list-item-action>
-            <v-icon class="teal--text">power_settings_new</v-icon>
+            <v-icon color="#182c50">power_settings_new</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title @click.prevent="signOut" class="teal--text">Cerrar Sesión</v-list-item-title>
+            <v-list-item-title @click.prevent="signOut" class="colorKonecta body-2">Cerrar Sesión</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
     </v-navigation-drawer>
 
     <v-content style="background-color:#F5F6F9;">
-      <!-- <v-app-bar color="teal accent-4" dense dark>
-        <v-app-bar-nav-icon>
-          <v-icon>menu</v-icon>
-        </v-app-bar-nav-icon>
-        <v-toolbar-title>{{title}}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon v-show='currentUrl=="/details"'>
-          <v-icon>keyboard_arrow_left</v-icon>Regresar
-        </v-btn>
-      </v-app-bar> -->
             <router-view></router-view>
     </v-content>
   </v-app>
@@ -106,5 +96,8 @@ export default {
 <style>
 .size {
   width: 5vw;
+}
+.colorKonecta{
+  color: #182c50;
 }
 </style>

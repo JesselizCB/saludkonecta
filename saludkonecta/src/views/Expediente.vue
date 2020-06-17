@@ -7,8 +7,7 @@
           <v-card outlined class="px-5">
             <v-container>
               <v-row>
-                <p>{{arrayUser[0].status}}</p>
-                <v-col>
+               <v-col>
                   <p class="font-weight-bold">Documento: <span class="grey--text">{{colaborador.documento}}</span></p>
                   <p class="font-weight-bold">Cuenta: <span class="grey--text">{{colaborador.account}}</span></p>
                   <p class="font-weight-bold">Telefono: <span class="grey--text">{{colaborador.phone}}</span></p>
@@ -23,11 +22,11 @@
           </v-card>
         </v-col>
         <v-col cols="4" class="text-end">
-          <v-btn color="teal accent-4 white--text" @click.stop="seguimientoForm=true">
+          <v-btn color="#3bb8c4" class="white--text" @click.stop="seguimientoForm=true">
             Añadir seguimiento
             <v-icon right class="white--text">add_circle_outline</v-icon>
           </v-btn>
-          <seguimiento :visible="seguimientoForm" :idColaborador="colaborador.idColaborador" @close="seguimientoForm=false, loadDataUser()"></seguimiento>
+          <seguimiento :visible="seguimientoForm" :idColaborador="colaborador.idColaborador" @close="seguimientoForm=false"></seguimiento>
           <v-text-field
             v-model="search"
             append-icon="search"
@@ -65,16 +64,9 @@ export default {
   name: "Expediente",
   created() {
     this.$store.commit("SET_LAYOUT", "principal-layout");
-    console.log(this.colaborador.idColaborador);
-    this.loadDataUser();
     this.loadTable();
   },
-  mounted(){
-    this.loadDataUser();
-    console.log(this.arrayUser[0].status);
-    
-  },
-  components: {
+ components: {
     seguimiento,
     navBar
   },
@@ -111,23 +103,12 @@ export default {
     toBack() {
       this.$router.replace({ path: "/Home" });
     },
-    loadDataUser(){
-      let arrayData = [];
-      getDataUser(this.colaborador.idColaborador).onSnapshot(function(doc) {
-        console.log("Current data: ", doc.data());
-        arrayData.push(doc.data());
-    });
-      console.log(arrayData);
-      this.arrayUser = arrayData;
-      console.log(this.arrayUser);
-    },
-     loadTable(){
-      let i = 1;
+    loadTable(){
       console.log(this.colaborador.idColaborador);      
       getSeguimiento(this.colaborador.idColaborador).onSnapshot(querySnapshot => {
+        let i = 1;
         this.dataTable = [];
          querySnapshot.forEach(item => {
-           console.log(item.data());
           this.dataTable.push({
             number: i,
             date: item.data().date,
@@ -140,6 +121,8 @@ export default {
           })
           i++;
         }); 
+        let index = this.dataTable.length;
+        this.colaborador.status = this.dataTable[index-1].status;
       });
     }  
   }

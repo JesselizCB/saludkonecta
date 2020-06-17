@@ -22,7 +22,7 @@
           ></v-select>
         </v-col>
         <v-col cols="3" class="justify-end mt-4 ml-5">
-          <v-btn color="teal accent-4 white--text" @click.stop="registerForm=true">
+          <v-btn color="#f9b233" class="white--text" @click.stop="registerForm=true">
             Crear Registro
             <v-icon right class="white--text">add_circle_outline</v-icon>
           </v-btn>
@@ -41,7 +41,7 @@
             class="elevation-1"
           >
             <template v-slot:item.detail="{ item }">
-              <v-btn x-small color="teal accent-4 white--text" @click="openPaciente(item)">Detalles</v-btn>
+              <v-btn x-small color="#f9b233" class="white--text" @click="openPaciente(item)">Control</v-btn>
             </template>
           </v-data-table>
         </v-col>
@@ -96,8 +96,7 @@ export default {
         { text: "Cuenta", value: "account" },
         { text: "Sede", value: "sede" },
         { text: "Estado", value: "status" },
-        { text: "Fecha y hora", value: "date" },
-        { text: "Dias", value: "days", sortable: false },
+        { text: "Fecha", value: "date" },
         { text: "Detalle", value: "detail", sortable: false }
       ],
       dataTable: []
@@ -125,7 +124,6 @@ export default {
             account: item.data().account,
             sede: item.data().sede,
             status: item.data().status,
-            days: "4",
             date: item.data().date,
             idColaborador: item.id
           });

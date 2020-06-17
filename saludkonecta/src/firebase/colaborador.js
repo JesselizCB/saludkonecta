@@ -26,7 +26,7 @@ export const createSeguimiento = (data) => {
   status: data.status,
   temperature: data.temperature,
   information_1: data.observaciones_1,
-  retiro: data.retiro,
+  retiro: (data.retiro)?"Si":"No",
   information_2: data.observaciones_2
 });
 db.collection('colaborador').doc(data.idColaborador).update({status: data.status});
@@ -37,4 +37,3 @@ export const getRegister = () => db.collection('colaborador').orderBy('date', 'd
 
 export const getSeguimiento = (idUser) => db.collection('seguimiento').where("idColaborador", "==", idUser);
 
-export const getDataUser = (idUser) => db.collection('colaborador').doc(idUser);

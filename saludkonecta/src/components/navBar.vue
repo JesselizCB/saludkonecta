@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar color="teal accent-4" dense dark>
+    <v-app-bar color="#3bb8c4" dense dark>
         <v-app-bar-nav-icon>
           <v-icon>{{icon}}</v-icon>
         </v-app-bar-nav-icon>

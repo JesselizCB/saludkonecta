@@ -4,7 +4,7 @@
       <v-card-title class="cardTitle">
         <v-row>
           <v-col cols="11" class="text-center">
-            <span class="title-1 font-weight-bold teal--text">Crear Registro</span>
+            <span class="title-1 font-weight-bold colorKonecta ml-2">Crear Registro</span>
           </v-col>
           <v-col cols="1" class="iconClose">
             <v-icon @click="show = false">highlight_off</v-icon>
@@ -104,7 +104,7 @@
       <v-card-actions class="btnGuardar pb-5">
         <v-btn
           :disabled="!valid"
-          color="#00968F"
+          color="#f9b233"
           class="text-capitalize white--text"
           width="220"
           type="submit"
@@ -205,5 +205,8 @@ export default {
 .fieldStatus{
   width: 250px;
   margin-right: 8px;
+}
+.colorKonecta{
+  color: #3bb8c4;
 }
 </style>

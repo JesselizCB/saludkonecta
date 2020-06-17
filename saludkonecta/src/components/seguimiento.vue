@@ -4,10 +4,10 @@
       <v-card-title class="cardTitle">
         <v-row>
           <v-col cols="11" class="text-center">
-            <span class="title-1 font-weight-bold teal--text ml-3">Nuevo Seguimiento</span>
+            <span class="title-1 font-weight-bold ml-3 colorKonecta">Nuevo Seguimiento</span>
           </v-col>
           <v-col cols="1" class="iconClose">
-            <v-icon @click="show = false">highlight_off</v-icon>
+            <v-icon @click="show = false, cleanForm()">highlight_off</v-icon>
           </v-col>
         </v-row>
         <v-row class="size">
@@ -38,14 +38,18 @@
               ></v-text-field>
             </v-row>
             <v-row>
-              <v-text-field
+              <p class="black--text body-1 ml-1 font-weight-bold black--text">Responsable Control de Temperatura:</p>
+              <v-row class="fieldDoctor">
+                <v-icon class="mt-2 ml-3">account_box</v-icon>
+                <p class="mt-6 ml-2 body-2 black--text">Lizeth Cersso</p>
+              </v-row>
+              <!-- <v-text-field
                 prepend-icon="account_box"
                 color="teal"
                 readonly
-                v-model="doctorName"
+                value="Lizeth Cersso"
                 label="Responsable Control de Temperatura:"
-                :rules="[v => !!v || 'Campo requerido']"
-              ></v-text-field>
+              ></v-text-field>-->
             </v-row>
             <v-row>
               <v-select
@@ -77,18 +81,19 @@
             </v-row>
             <v-row class="black--text subtitle-1 font-weight-bold divRetiro">
               <v-icon>ballot</v-icon>
-              <p class="mt-4 ml-1">Registrar Retiro anticipado</p>
+              <p class="mt-4 ml-2">Registrar Retiro anticipado</p>
             </v-row>
             <v-row class="divRetiro2">
               <span>Si el colaborador presenta síntomas que ponen en riesgo su salud.</span>
             </v-row>
-            <v-row>
-              <span class="body-2">Se registró retiro anticipado</span>
-              <v-checkbox value="retiro"></v-checkbox>
+            <v-row class="mt-1">
+              <input class="fieldCheck" type="checkbox" id="checkbox" v-model="data.retiro" />
+              <span class="body-2 ml-1">Se registró retiro anticipado</span>
             </v-row>
-            <v-row class="fieldObs">
+            <v-row class="mt-5">
               <p class="black--text subtitle-2 font-weight-bold">Observaciones adicionales:</p>
               <v-textarea
+                :disabled="!data.retiro"
                 color="teal"
                 label
                 auto-grow
@@ -105,7 +110,8 @@
       </v-card-text>
       <v-card-actions class="btnSeguimiento pb-5">
         <v-btn
-          color="#00968F"
+          :disabled="!valid"
+          color="#f9b233"
           class="text-capitalize white--text"
           width="220"
           type="submit"
@@ -117,15 +123,17 @@
 </template>
 
 <script>
-import {createSeguimiento} from "../firebase/colaborador";
+import { createSeguimiento } from "../firebase/colaborador";
 
 export default {
   name: "seguimiento",
   props: ["visible", "idColaborador"],
+  created() {
+    this.cleanForm();
+  },
   data: () => ({
-    doctorName: localStorage.getItem("doctor"),
     valid: true,
-    listContacto: ["Virtual", "Telefónica"],
+    listContacto: ["Presencial", "Telefónica"],
     listName: ["Maray Montes", "Armando"],
     listDocuments: ["Carnet Extranjeria", "DNI", "PTP"],
     statusList: [
@@ -136,16 +144,15 @@ export default {
       "Recuperado",
       "Sospechoso"
     ],
-    data: 
-      {
-        idColaborador: "",
-        typeContact: "",
-        temperature: "",
-        status: "",
-        observaciones_1: "",
-        retiro: "",
-        observaciones_2: ""
-      }
+    data: {
+      idColaborador: "",
+      typeContact: "",
+      temperature: "",
+      status: "",
+      observaciones_1: "",
+      retiro: false,
+      observaciones_2: ""
+    }
   }),
   computed: {
     show: {
@@ -163,9 +170,12 @@ export default {
     saveSeguimiento() {
       this.$refs.form.validate();
       this.data.idColaborador = this.idColaborador;
-      createSeguimiento(this.data),
+      createSeguimiento(this.data);
+      this.cleanForm();
+    },
+    cleanForm() {
       this.$refs.form.reset();
-      this.doctorName = localStorage.getItem("doctor");
+      this.data.retiro = false;
     }
   }
 };
@@ -199,7 +209,13 @@ export default {
   justify-content: center;
   margin-top: -15px;
 }
-.fieldObs {
-  margin-top: -20px;
+.fieldCheck {
+  margin-top: 4px;
+}
+.colorKonecta {
+  color: #3bb8c4;
+}
+.fieldDoctor{
+  margin-top:-35px;
 }
 </style>
