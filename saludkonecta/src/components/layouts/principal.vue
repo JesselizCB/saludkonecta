@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <!-- expand-on-hover -->
     <!-- :mini-variant.sync="mini" -->
     <v-navigation-drawer
@@ -9,12 +9,10 @@
       app
       :mini-variant="miniVariant"
       permanent
-      dark
-      class="white--text"
     >
       <v-list-item link @click.stop="miniVariant = !miniVariant">
         <v-list-item-content>
-          <v-list-item-title class="headline font-weight-bold text-center colorKonecta">Konecta</v-list-item-title>
+          <v-list-item-title class="headline font-weight-bold text-center titleKonecta">Konecta</v-list-item-title>
         </v-list-item-content>
         <v-btn icon color="#182c50" @click.stop="miniVariant = !miniVariant">
           <v-icon>menu_open</v-icon>
@@ -29,7 +27,7 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title
-                class="black--text subtitle-2"
+                class="black--text subtitle-1"
                 @click="$router.push('/Home')"
               >Inicio</v-list-item-title>
             </v-list-item-content>
@@ -43,7 +41,7 @@
             <v-icon color="#182c50">power_settings_new</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title @click.prevent="signOut" class="colorKonecta body-2">Cerrar Sesión</v-list-item-title>
+            <v-list-item-title class="titleKonecta body-2" @click.prevent="signOut">Cerrar Sesión</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -97,7 +95,7 @@ export default {
 .size {
   width: 5vw;
 }
-.colorKonecta{
+.titleKonecta{
   color: #182c50;
 }
 </style>
