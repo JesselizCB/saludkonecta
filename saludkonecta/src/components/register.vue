@@ -47,53 +47,74 @@
             </v-row>
             <v-row>
               <v-text-field
+                prepend-icon="date_range"
+                class="fieldEdad"
+                label="Edad:"
+                v-model="data.edad"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-text-field>
+              <v-text-field
+                label="IMC:"
+                class="fieldImc"
+                v-model="data.imc"
+                color="teal"
+                required
+                :rules="[v => !!v || 'Campo requerido']"
+              ></v-text-field>
+              <v-text-field
                 prepend-icon="local_phone"
                 label="Telefono:"
                 v-model="data.phone"
-                class="fielPhone"
                 color="teal"
                 required
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-text-field>
             </v-row>
-            <v-row class="ml-1 mr-1">
+            <v-row class="rowSede">
               <v-text-field
-                prepend-icon="ballot"
-                v-model="data.account"
-                label="Cuenta:"
-                class="fieldCuenta"
+                prepend-icon="work"
+                label="Puesto/Cargo:"
+                v-model="data.position"
                 color="teal"
                 required
+                class="fieldCargo"
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-text-field>
               <v-select
-                prepend-icon="location_on"
                 class="fieldSede"
+                prepend-icon="location_on"
                 color="teal"
                 :items="listSede"
                 v-model="data.sede"
                 label="Sede:"
                 required
+                :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
             </v-row>
-            <v-row class="align-center">
+            <v-row>
               <v-select
-                prepend-icon="supervisor_account"
-                :items="listContact"
-                v-model="data.typeContact"
-                label="Tipo de contacto:"
-                class="fieldTypeContact"
+                prepend-icon="ballot"
                 color="teal"
+                :items="listAccount"
+                v-model="data.account"
+                label="Cuenta:"
+                menu-props="auto"
+                hide-details
+                single-line
                 required
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
+            </v-row>
+            <v-row class="mt-2 ml-1">
               <v-select
-                class="fieldStatus"
-                :items="statusList"
-                prepend-icon="perm_identity"
-                v-model="data.status"
-                label="Estado:"
+                class="fieldBusines"
+                prepend-icon="business"
                 color="teal"
+                :items="listBussines"
+                v-model="data.bussines"
+                label="Negocio:"
                 required
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
@@ -134,16 +155,57 @@ export default {
       "Surquillo"
     ],
     listDocuments: ["Carnet Extranjeria", "DNI", "PTP"],
-    listContact: ["Presencial", "Telefonica"],
-    statusList: ["Acreditado", "Fallecido", "Hospitalizado","Negativo", "Recuperado", "Sospechoso"],
+    listBussines: [
+      "Stratton Perú",
+      "Allus Spain SL Suc Perú",
+      "Konecta BTO S.L."
+    ],
+    listAccount: [
+      "AFP INTEGRA – SURA",
+      "ALICORP S.A.A",
+      "BANBIF",
+      "BANCO CONTINENTAL",
+      "BANCO GNB PERÚ S.A.",
+      "BERLITZ",
+      "BRITISH TELECOM",
+      "CALIDDA",
+      "CENCOSUD",
+      "CENCOSUD MDH",
+      "CLARO CHILE",
+      "CLARO PERÚ",
+      "DERRAMA MAGISTERIAL",
+      "DINERS",
+      "ENTEL",
+      "ENTEL PERÚ",
+      "EXPERIENCIA AL CLIENTE Y ANALITICA",
+      "FARMACIA VECINA",
+      "FENOSA",
+      "INNOVA SCHOOL",
+      "KREALO",
+      "LAN",
+      "MEDIOS",
+      "MOVISTAR ARGENTINA",
+      "MOVISTAR CHILE",
+      "MOVISTAR PERÚ",
+      "ORGANIZACIÓN Y PROCEDIMIENTOS",
+      "PACIFICO",
+      "PERÚ CALIDAD",
+      "RIMAC",
+      "TRANSFORMACION DIGITAL",
+      "UNICEF",
+      "UNIQUE"
+    ],
     data: {
       name: "",
       typeDocument: "",
       document: "",
+      edad: "",
+      imc: "",
+      position: "",
       phone: "",
+      bussines: "",
       account: "",
       sede: "",
-      typeContact: "",
       status: ""
     }
   }),
@@ -165,7 +227,7 @@ export default {
       this.$refs.form.validate();
       createRegister(this.data);
       this.$refs.form.reset();
-    },
+    }
   }
 };
 </script>
@@ -176,37 +238,43 @@ export default {
 .sizeTypeDoc {
   width: 150px;
 }
-.fieldTypeContact {
-  width: 180px;
-}
 .btnGuardar {
   display: flex;
   justify-content: center;
-}
-.fieldCuenta {
-  margin-left: -15px;
-  width: 190px;
+  margin-top: -20px;
 }
 .iconClose {
   margin-top: -10px;
 }
 .fielPhone {
+  width: 120px;
+}
+.fieldEdad {
   width: 100px;
 }
-.fieldSede{
-  width: 200px;
-  margin-left: 8px;
+.fieldImc {
+  width: 120px;
+  margin-left: 20px;
 }
-.cardTitle{
+.cardTitle {
   display: flex;
   justify-content: center;
   margin-top: -15px;
 }
-.fieldStatus{
-  width: 250px;
-  margin-right: 8px;
-}
-.colorKonecta{
+.colorKonecta {
   color: #3bb8c4;
+}
+.fieldSede {
+  width: 50px;
+  margin-left: 8px;
+}
+.rowSede{
+  margin-bottom: -10px;
+}
+.fieldCargo {
+  width: 100px;
+}
+.fieldBusines {
+  margin-left: -15px;
 }
 </style>

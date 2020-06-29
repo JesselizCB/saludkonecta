@@ -35,8 +35,7 @@
             :headers="headers"
             :items="dataTable"
             :search="search"
-            :sort-by="['calories', 'fat']"
-            :sort-desc="[false, true]"
+            :sort-by="['date']"
             multi-sort
             class="elevation-1"
           >
@@ -89,14 +88,17 @@ export default {
           sortable: false,
           value: "number"
         },
+        { text: "Fecha", value: "date" },
         { text: "Documento", value: "documento" },
-        { text: "No. Documento", value: "dni" },
+        { text: "No. Documento", value: "dni",sortable: false },
         { text: "Nombres y Apellidos", value: "nombre" },
-        { text: "Celular", value: "phone", sortable: false },
+        { text: "Celular/Fijo", value: "phone", sortable: false },
+        { text: "Cargo", value: "position"},
+        { text: "Área", value: "area", sortable: false },
+        { text: "Negocio", value: "bussines", sortable: false },
         { text: "Cuenta", value: "account" },
         { text: "Sede", value: "sede" },
         { text: "Estado", value: "status" },
-        { text: "Fecha", value: "date" },
         { text: "Detalle", value: "detail", sortable: false }
       ],
       dataTable: []
@@ -121,10 +123,14 @@ export default {
             dni: item.data().document,
             nombre: item.data().name,
             phone: item.data().phone,
+            position: item.data().position,
+            bussines: item.data().bussines,
             account: item.data().account,
             sede: item.data().sede,
             status: item.data().status,
             date: item.data().date,
+            edad: item.data().edad, 
+            imc: item.data().imc,
             idColaborador: item.id
           });
           i++;
