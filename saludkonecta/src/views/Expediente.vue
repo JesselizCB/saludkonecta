@@ -20,10 +20,6 @@
                     Telefono:
                     <span class="grey--text">{{colaborador.phone}}</span>
                   </p>
-                  <p class="font-weight-bold">
-                    Sede:
-                    <span class="grey--text">{{colaborador.sede}}</span>
-                  </p>
                 </v-col>
                 <v-col>
                   <p class="font-weight-bold">
@@ -35,25 +31,30 @@
                     <span class="grey--text">{{colaborador.imc}}</span>
                   </p>
                   <p class="font-weight-bold">
-                    Cargo:
-                    <span class="grey--text">{{colaborador.position}}</span>
-                  </p>
-                  <p class="font-weight-bold">
                     Estado:
                     <span class="grey--text">{{colaborador.status}}</span>
                   </p>
                 </v-col>
               </v-row>
-              <v-row class="fieldArea">
-                <p class="font-weight-bold">
-                  Cuenta:
-                  <span class="grey--text">{{colaborador.account}}</span>
+              <v-row class=" ml-1">
+                <p class="font-weight-bold" v-if="dataTable.length != 0">
+                  Factores de riesgo:
+                  <span class="grey--text" v-if="colaborador.hta ==`Si`">HTA,</span>
+                  <span class="grey--text" v-if="colaborador.diabetes ==`Si`"> Diabetes,</span>
+                  <span class="grey--text" v-if="colaborador.asma ==`Si`"> Asma,</span>
+                  <span class="grey--text" v-if="colaborador.respiratoria ==`Si`"> Enf. Respiratoria crónica,</span>
+                  <span class="grey--text" v-if="colaborador.cardiovascular ==`Si`"> Enf. Cardiovascular,</span>
+                  <span class="grey--text" v-if="colaborador.obesidad ==`Si`"> Obesidad,</span>
+                  <span class="grey--text" v-if="colaborador.cancer ==`Si`"> Cancer,</span>
+                  <span class="grey--text" v-if="colaborador.inmunosuprimido ==`Si`"> Inmunosuprimido,</span>
+                  <span class="grey--text" v-if="colaborador.renal ==`Si`"> Insuficiencia renal crónica</span>
                 </p>
               </v-row>
-              <v-row class="fieldBussines">
-                <p class="font-weight-bold">
-                  Negocio:
-                  <span class="grey--text">{{colaborador.bussines}}</span>
+              <v-row class="ml-1">
+                <p class="font-weight-bold" v-if="dataTable.length != 0">
+                  Antecedente Epidemiológico:
+                  <span class="grey--text" v-if="colaborador.antecedente ==`Si`"> Si</span>
+                  <span class="grey--text" v-else> No</span>
                 </p>
               </v-row>
             </v-container>
@@ -67,6 +68,8 @@
           <seguimiento
             :visible="seguimientoForm"
             :idColaborador="colaborador.idColaborador"
+            :sendDataFactor="showFactor"
+            :total="dataTable.length"
             @close="seguimientoForm=false"
           ></seguimiento>
           <v-text-field
@@ -262,8 +265,6 @@ export default {
         { text: "Fecha", value: "date" },
         { text: "Contacto", value: "contact" },
         { text: "Estado", value: "status" },
-        { text: "F. de riesgo", value: "riesgo" },
-        { text: "A. Epidemiológico", value: "antecedente" },
         { text: "Pruebas", value: "pruebas" },
         { text: "Evolución", value: "evolucion" },
         { text: "Aislamiento desde", value: "dateBeginA" },
@@ -325,7 +326,6 @@ export default {
               contact: item.data().typeContact,
               status: item.data().status,
               riesgo: item.data().riesgo,
-              antecedente: item.data().antecedente,
               evolucion: item.data().evolucion,
               dateBeginA: item.data().dateBeginA,
               dateEndA: item.data().dateEndA,
@@ -336,8 +336,9 @@ export default {
             i++;
           });
           let index = this.dataTable.length;
-          if (index != 0)
+          if (index != 0) {
             this.colaborador.status = this.dataTable[index - 1].status;
+          }
         }
       );
     },
@@ -355,8 +356,19 @@ export default {
       this.dataTest = this.dataTest.sort(
         (a, b) => parseInt(a.date) - parseInt(b.date)
       );
-      console.log(this.dataTest);
       this.pruebasForm = true;
+    },
+    showFactor(data){
+      this.colaborador.antecedente = (data.antecedente)?"Si":"No";
+      this.colaborador.hta = (data.hta)?"Si":"No";
+      this.colaborador.diabetes = (data.diabetes)?"Si":"No";
+      this.colaborador.asma = (data.asma)?"Si":"No";
+      this.colaborador.respiratoria = (data.respiratoria)?"Si":"No";
+      this.colaborador.cardiovascular = (data.cardiovascular)?"Si":"No";
+      this.colaborador.obesidad = (data.obesidad)?"Si":"No";
+      this.colaborador.cancer = (data.cancer)?"Si":"No";
+      this.colaborador.inmunosuprimido = (data.inmunosuprimido)?"Si":"No";
+      this.colaborador.renal = (data.renal)?"Si":"No";
     }
   }
 };
@@ -376,4 +388,5 @@ export default {
 .fieldArea {
   margin-top: -10px;
 }
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="550px" :persistent="true">
+  <v-dialog v-model="show" max-width="600px" :persistent="true">
     <v-card>
       <v-card-title class="cardTitle">
         <v-row>
@@ -71,16 +71,104 @@
                 :rules="[v => !!v || 'Campo requerido']"
               ></v-select>
             </v-row>
-            <v-row class="mt-3 justify-space-between">
-              <v-row class="ml-1">
-                <input class="fieldCheck" type="checkbox" id="checkbox1" v-model="data.riesgo" />
-                <span class="fieldCheck1">Factor de Riesgo</span>
-              </v-row>
-              <v-row class="justify-center">
-                <input class="fieldCheck" type="checkbox" id="checkbox2" v-model="data.antecedente" />
-                <span class="fieldCheck1">Antecedente Epidemiológico</span>
-              </v-row>
+            <v-row class="ml-1" v-if="total==0">
+              <label>
+                <input
+                  class="fieldCheck"
+                  type="checkbox"
+                  id="checkbox0"
+                  v-model="dataC.antecedente"
+                />
+                <span class="black--text font-weight-medium ml-1">Antecedente Epidemiológico</span>
+              </label>
             </v-row>
+            <div class="mt-2 mb-3" v-if="total==0">
+              <fieldset>
+                <legend class="black--text font-weight-medium">Factores de Riesgo</legend>
+                <div class="sectionFR">
+                  <div class="sectionFR1">
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        color="teal"
+                        type="checkbox"
+                        id="checkbox1"
+                        v-model="dataC.hta"
+                      /> HTA
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox2"
+                        v-model="dataC.diabetes"
+                      /> Diabetes
+                    </label>
+                    <br />
+                    <label>
+                      <input class="fieldCheck" type="checkbox" id="checkbox8" v-model="dataC.asma" /> Asma
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox3"
+                        v-model="dataC.respiratoria"
+                      /> Enf Respiratoria crónica
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox9"
+                        v-model="dataC.cardiovascular"
+                      /> Enf Cardiovascular
+                    </label>
+                  </div>
+                  <div class="sectionFR2">
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox4"
+                        v-model="dataC.obesidad"
+                      /> Obesidad
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox5"
+                        v-model="dataC.cancer"
+                      /> Cáncer
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox7"
+                        v-model="dataC.inmunosuprimido"
+                      /> Inmunosuprimido
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        class="fieldCheck"
+                        type="checkbox"
+                        id="checkbox6"
+                        v-model="dataC.renal"
+                      /> Insuficiencia renal crónica
+                    </label>
+                    <br />
+                  </div>
+                </div>
+              </fieldset>
+            </div>
             <v-row class="mt-2">
               <v-select
                 prepend-icon="enhanced_encryption"
@@ -139,7 +227,7 @@
                 </v-menu>
               </div>
             </v-row>
-            <p class="black--text subtitle-2 font-weight-bold">Observaciones adicionales:</p>
+            <p class="black--text subtitle-2 font-weight-bold mt-1">Observaciones adicionales:</p>
             <v-textarea
               color="teal"
               label
@@ -169,12 +257,12 @@
 </template>
 
 <script>
-import { createSeguimiento } from "../firebase/colaborador";
+import { createSeguimiento, createFactorRiesgo } from "../firebase/colaborador";
 import moment from "moment";
 
 export default {
   name: "seguimiento",
-  props: ["visible", "idColaborador"],
+  props: ["visible", "idColaborador", "total", "sendDataFactor"],
   data() {
     return {
       valid: true,
@@ -207,6 +295,17 @@ export default {
         "Ig M reactivo Ig G reactivo",
         "Ig M no reactivo Ig G reactivo"
       ],
+      dataC: {
+        idColaborador: "",
+        antecedente: false,
+        asma: false,
+        respiratoria: false,
+        cardiovascular: false,
+        obesidad: false,
+        cancer: false,
+        inmunosuprimido: false,
+        renal: false
+      },
       data: {
         idColaborador: "",
         fecha: "",
@@ -216,7 +315,6 @@ export default {
         temperature: "",
         status: "",
         riesgo: false,
-        antecedente: false,
         evolucion: "",
         observaciones: ""
       }
@@ -249,6 +347,7 @@ export default {
     saveSeguimiento() {
       this.$refs.form.validate();
       this.data.idColaborador = this.idColaborador;
+      this.dataC.idColaborador = this.idColaborador;
       this.data.fecha = moment(this.date).format("DD/MM/YYYY");
       console.log(this.dateBeginA);
       console.log(this.dateEndA);
@@ -259,15 +358,24 @@ export default {
         this.data.dateBeginA = "-";
         this.data.dateEndA = "-";
       }
-      console.log(this.data);
-      
       createSeguimiento(this.data);
+      if (this.total == 0) {
+        createFactorRiesgo(this.dataC);
+        this.sendDataFactor(this.dataC);
+        }
       this.cleanForm();
     },
     cleanForm() {
       this.$refs.form.reset();
       this.data.antecedente = false;
-      this.data.riesgo = false;
+      this.dataC.hta = false;
+      this.dataC.diabetes = false;
+      this.dataC.asma = false;
+      this.dataC.respiratoria = false;
+      this.dataC.cardiovascular = false;
+      this.dataC.cancer = false;
+      this.dataC.inmunosuprimido = false;
+      this.dataC.renal = false;
     }
   }
 };
@@ -301,12 +409,10 @@ export default {
   justify-content: center;
   margin-top: -15px;
 }
-.fieldCheck1 {
-  font-size: 15px;
-  margin-top: -4px;
-  margin-left: 8px;
-  color: black;
+.fieldCheck {
+  margin-bottom: 10px;
 }
+
 .colorKonecta {
   color: #3bb8c4;
 }
@@ -321,5 +427,22 @@ export default {
 }
 .fieldDateA {
   width: 220px;
+}
+.sectionFR {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+.sectionFR1 {
+  margin-left: 8px;
+}
+.sectionFR2 {
+  margin-right: 8px;
+}
+.labelFR {
+  margin-bottom: 50px;
+}
+fieldset {
+  border: 1px solid gray;
 }
 </style>

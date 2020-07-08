@@ -89,12 +89,9 @@ export default {
           value: "number"
         },
         { text: "Fecha", value: "date" },
-        { text: "Documento", value: "documento" },
-        { text: "No. Documento", value: "dni",sortable: false },
         { text: "Nombres y Apellidos", value: "nombre" },
         { text: "Celular/Fijo", value: "phone", sortable: false },
         { text: "Cargo", value: "position"},
-        { text: "Área", value: "area", sortable: false },
         { text: "Negocio", value: "bussines", sortable: false },
         { text: "Cuenta", value: "account" },
         { text: "Sede", value: "sede" },
@@ -131,7 +128,17 @@ export default {
             date: item.data().date,
             edad: item.data().edad, 
             imc: item.data().imc,
-            idColaborador: item.id
+            idColaborador: item.id,
+            antecedente: item.data().antecedente,
+            hta: item.data().hta,
+            diabetes: item.data().diabetes,
+            asma: item.data().asma,
+            respiratoria: item.data().respiratoria,
+            cardiovascular: item.data().cardiovascular,
+            obesidad: item.data().obesidad,
+            cancer: item.data().cancer,
+            inmunosuprimido: item.data().inmunosuprimido,
+            renal: item.data().renal,
           });
           i++;
         });

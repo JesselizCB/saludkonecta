@@ -18,6 +18,16 @@ export const createRegister = (data) => db.collection('colaborador').add({
   sede: data.sede,
   date: moment(new Date()).format("DD/MM/YYYY"),
   status: data.status,
+  antecedente: "",
+  hta: "",
+  diabetes: "",
+  asma: "",
+  respiratoria: "",
+  cardiovascular: "",
+  obesidad: "",
+  cancer: "",
+  inmunosuprimido: "",
+  renal: "",
 });
 
 export const createSeguimiento = (data) => {
@@ -31,8 +41,6 @@ export const createSeguimiento = (data) => {
   typeContact: data.typeContact,
   status: data.status,
   temperature: data.temperature,
-  riesgo: (data.riesgo)?"Si":"No",
-  antecedente: (data.antecedente)?"Si":"No",
   evolucion: data.evolucion,
   observaciones: (data.observaciones === undefined)?"":data.observaciones,
   pruebas: 0,
@@ -55,6 +63,19 @@ const updateTotalTest = (id) => {
   db.collection('seguimiento').doc(id).update({pruebas: value.data().pruebas + 1 });
  });
 };
+
+export const createFactorRiesgo = (data) => db.collection('colaborador').doc(data.idColaborador).update({
+  antecedente: (data.antecedente)?"Si":"No",
+  hta: (data.hta)?"Si":"No",
+  diabetes: (data.diabetes)?"Si":"No",
+  asma: (data.asma)?"Si":"No",
+  respiratoria: (data.respiratoria)?"Si":"No",
+  cardiovascular: (data.cardiovascular)?"Si":"No",
+  obesidad: (data.obesidad)?"Si":"No",
+  cancer: (data.cancer)?"Si":"No",
+  inmunosuprimido: (data.inmunosuprimido)?"Si":"No",
+  renal: (data.renal)?"Si":"No",
+});
 
 export const getDoctor = (idDoctor) => db.collection('users').doc(idDoctor).get();
 
